@@ -3,6 +3,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/project1.dir/src/correlation.cpp.o.d"
   "CMakeFiles/project1.dir/src/csv_reader.cpp.o"
   "CMakeFiles/project1.dir/src/csv_reader.cpp.o.d"
+  "CMakeFiles/project1.dir/src/csv_writer.cpp.o"
+  "CMakeFiles/project1.dir/src/csv_writer.cpp.o.d"
   "CMakeFiles/project1.dir/src/main.cpp.o"
   "CMakeFiles/project1.dir/src/main.cpp.o.d"
   "CMakeFiles/project1.dir/src/standardize.cpp.o"

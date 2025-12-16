@@ -1,1 +1,1 @@
-/usr/bin/c++ CMakeFiles/project1.dir/src/main.cpp.o CMakeFiles/project1.dir/src/csv_reader.cpp.o CMakeFiles/project1.dir/src/standardize.cpp.o CMakeFiles/project1.dir/src/correlation.cpp.o -o project1 
+/usr/bin/c++ CMakeFiles/project1.dir/src/main.cpp.o CMakeFiles/project1.dir/src/csv_reader.cpp.o CMakeFiles/project1.dir/src/standardize.cpp.o CMakeFiles/project1.dir/src/correlation.cpp.o CMakeFiles/project1.dir/src/csv_writer.cpp.o -o project1 

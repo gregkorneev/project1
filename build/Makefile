@@ -177,6 +177,30 @@ src/csv_reader.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/project1.dir/build.make CMakeFiles/project1.dir/src/csv_reader.cpp.s
 .PHONY : src/csv_reader.cpp.s
 
+src/csv_writer.o: src/csv_writer.cpp.o
+.PHONY : src/csv_writer.o
+
+# target to build an object file
+src/csv_writer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/project1.dir/build.make CMakeFiles/project1.dir/src/csv_writer.cpp.o
+.PHONY : src/csv_writer.cpp.o
+
+src/csv_writer.i: src/csv_writer.cpp.i
+.PHONY : src/csv_writer.i
+
+# target to preprocess a source file
+src/csv_writer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/project1.dir/build.make CMakeFiles/project1.dir/src/csv_writer.cpp.i
+.PHONY : src/csv_writer.cpp.i
+
+src/csv_writer.s: src/csv_writer.cpp.s
+.PHONY : src/csv_writer.s
+
+# target to generate assembly for a file
+src/csv_writer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/project1.dir/build.make CMakeFiles/project1.dir/src/csv_writer.cpp.s
+.PHONY : src/csv_writer.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -240,6 +264,9 @@ help:
 	@echo "... src/csv_reader.o"
 	@echo "... src/csv_reader.i"
 	@echo "... src/csv_reader.s"
+	@echo "... src/csv_writer.o"
+	@echo "... src/csv_writer.i"
+	@echo "... src/csv_writer.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

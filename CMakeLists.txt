@@ -11,4 +11,5 @@ add_executable(project1
     src/csv_reader.cpp
     src/standardize.cpp
     src/correlation.cpp
+    src/csv_writer.cpp
 )

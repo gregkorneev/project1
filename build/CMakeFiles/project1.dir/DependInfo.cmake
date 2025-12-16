@@ -10,6 +10,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/korneev/project1/src/correlation.cpp" "CMakeFiles/project1.dir/src/correlation.cpp.o" "gcc" "CMakeFiles/project1.dir/src/correlation.cpp.o.d"
   "/home/korneev/project1/src/csv_reader.cpp" "CMakeFiles/project1.dir/src/csv_reader.cpp.o" "gcc" "CMakeFiles/project1.dir/src/csv_reader.cpp.o.d"
+  "/home/korneev/project1/src/csv_writer.cpp" "CMakeFiles/project1.dir/src/csv_writer.cpp.o" "gcc" "CMakeFiles/project1.dir/src/csv_writer.cpp.o.d"
   "/home/korneev/project1/src/main.cpp" "CMakeFiles/project1.dir/src/main.cpp.o" "gcc" "CMakeFiles/project1.dir/src/main.cpp.o.d"
   "/home/korneev/project1/src/standardize.cpp" "CMakeFiles/project1.dir/src/standardize.cpp.o" "gcc" "CMakeFiles/project1.dir/src/standardize.cpp.o.d"
   )
