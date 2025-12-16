@@ -10,6 +10,7 @@
 #include "csv_writer.h"
 #include "eigen_analysis.h"
 #include "eigen_results_writer.h"
+#include "factor_loadings.h"
 
 int main() {
     std::vector<std::string> features = {
@@ -30,56 +31,50 @@ int main() {
 
     std::vector<double> mean, stddev;
     if (!standardize_inplace(X, mean, stddev)) {
-        std::cerr << "Ошибка стандартизации: возможно, в каком-то столбце нулевая дисперсия.\n";
+        std::cerr << "Ошибка стандартизации.\n";
         return 1;
     }
     std::cout << "Стандартизация выполнена.\n";
 
-    // Корреляционная матрица
     auto R = correlation_matrix(X);
 
-    // Папка results/
     std::filesystem::create_directory("results");
 
-    // Сохраняем матрицу корреляций
-    if (!write_matrix_csv("results/correlation_matrix.csv", features, R)) {
-        std::cerr << "Не удалось сохранить файл: results/correlation_matrix.csv\n";
-        return 1;
-    }
-    std::cout << "Корреляционная матрица сохранена в: results/correlation_matrix.csv\n";
+    write_matrix_csv("results/correlation_matrix.csv", features, R);
 
-    // Анализ собственных значений
     EigenReport rep = analyze_eigenvalues(R);
 
-    // Печать таблицы
-    std::cout << "\nСобственные значения и объяснённая дисперсия:\n";
-    std::cout << std::fixed << std::setprecision(4);
+    int k = rep.k_for_75;
+    std::cout << "\nВыбрано факторов: k = " << k << "\n";
 
-    std::cout << "Фактор  Собств.знач.  Доля(%)   Накопл.(%)\n";
-    for (size_t i = 0; i < rep.eigenvalues.size(); ++i) {
-        double pct = rep.explained[i] * 100.0;
-        double cpct = rep.cumulative[i] * 100.0;
+    // ===== ФАКТОРНЫЕ НАГРУЗКИ =====
+    auto L = compute_factor_loadings(R, k);
 
-        std::cout << std::setw(6) << (i + 1) << "  "
-                  << std::setw(11) << rep.eigenvalues[i] << "  "
-                  << std::setw(7) << pct << "  "
-                  << std::setw(9) << cpct << "\n";
+    // Сохраняем в CSV
+    std::vector<std::string> factor_names;
+    for (int i = 0; i < k; ++i)
+        factor_names.push_back("F" + std::to_string(i + 1));
+
+    write_matrix_csv("results/factor_loadings.csv", factor_names, L);
+
+    std::cout << "\nФакторные нагрузки (|значение| >= 0.4):\n";
+    std::cout << std::fixed << std::setprecision(3);
+
+    for (size_t i = 0; i < features.size(); ++i) {
+        std::cout << features[i] << ": ";
+        bool printed = false;
+        for (int f = 0; f < k; ++f) {
+            double val = L[i][f];
+            if (std::abs(val) >= 0.4) {
+                std::cout << "F" << (f + 1) << "=" << val << "  ";
+                printed = true;
+            }
+        }
+        if (!printed) std::cout << "(нет сильных нагрузок)";
+        std::cout << "\n";
     }
 
-    std::cout << "\nМинимальное число факторов для объяснения >= 75% дисперсии: k = "
-              << rep.k_for_75 << "\n";
-
-    if (rep.k_for_75 > 0) {
-        std::cout << "Накопленная доля для k: "
-                  << (rep.cumulative[rep.k_for_75 - 1] * 100.0) << "%\n";
-    }
-
-    // Сохраняем eigenvalues в CSV (заголовки оставляем на английском для удобства)
-    if (!write_eigenvalues_csv("results/eigenvalues.csv", rep.eigenvalues, rep.explained, rep.cumulative)) {
-        std::cerr << "Не удалось сохранить файл: results/eigenvalues.csv\n";
-        return 1;
-    }
-    std::cout << "Файл results/eigenvalues.csv сохранён.\n";
+    std::cout << "\nФайл results/factor_loadings.csv сохранён.\n";
 
     return 0;
 }

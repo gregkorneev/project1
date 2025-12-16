@@ -4,7 +4,6 @@ project(project1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Eigen
 find_package(Eigen3 REQUIRED NO_MODULE)
 
 include_directories(include)
@@ -17,6 +16,7 @@ add_executable(project1
     src/csv_writer.cpp
     src/eigen_analysis.cpp
     src/eigen_results_writer.cpp
+    src/factor_loadings.cpp
 )
 
 target_link_libraries(project1 Eigen3::Eigen)
