@@ -13,44 +13,80 @@
 #include "eigen_results_writer.h"
 #include "factor_loadings.h"
 
+static std::string factor_label_short(int idx) {
+    return "F" + std::to_string(idx + 1);
+}
+
+static std::string factor_label_long(int idx) {
+    // Пояснения к факторам (можно менять, если по смыслу уточните после интерпретации)
+    switch (idx) {
+        case 0: return "Social";
+        case 1: return "Achievement";
+        case 2: return "FamilyLeisure";
+        case 3: return "AgeAbsence";
+        case 4: return "Study";
+        case 5: return "Other";
+        default: return "";
+    }
+}
+
+static std::string factor_label_full(int idx) {
+    return factor_label_short(idx) + "(" + factor_label_long(idx) + ")";
+}
+
 static void print_loadings_table(
     const std::vector<std::string>& features,
-    const std::vector<std::string>& factor_names,
     const std::vector<std::vector<double>>& L
 ) {
-    int rows = (int)features.size();
-    int cols = (int)factor_names.size();
+    const int rows = (int)features.size();
+    const int cols = rows > 0 ? (int)L[0].size() : 0;
+
+    const int w_feat = 14;   // ширина колонки "Признак"
+    const int w_num  = 12;   // ширина чисел
+    const int w_head = 12;   // ширина заголовков факторов
 
     std::cout << "\nМатрица факторных нагрузок (признаки x факторы):\n";
     std::cout << std::fixed << std::setprecision(3);
 
-    // header
-    std::cout << std::setw(12) << "Признак";
+    // Заголовок 1: F1..Fk
+    std::cout << std::setw(w_feat) << "Признак";
     for (int j = 0; j < cols; ++j) {
-        std::cout << std::setw(8) << factor_names[j];
+        std::cout << std::setw(w_head) << factor_label_short(j);
     }
     std::cout << "\n";
 
-    // rows
+    // Заголовок 2: пояснения факторов
+    std::cout << std::setw(w_feat) << "";
+    for (int j = 0; j < cols; ++j) {
+        std::string s = factor_label_long(j);
+        if ((int)s.size() > w_head - 1) s = s.substr(0, w_head - 1); // чтобы не ломало таблицу
+        std::cout << std::setw(w_head) << s;
+    }
+    std::cout << "\n";
+
+    // Разделитель
+    std::cout << std::setw(w_feat) << "--------";
+    for (int j = 0; j < cols; ++j) std::cout << std::setw(w_head) << "----------";
+    std::cout << "\n";
+
+    // Строки данных
     for (int i = 0; i < rows; ++i) {
-        std::cout << std::setw(12) << features[i];
+        std::cout << std::setw(w_feat) << features[i];
         for (int j = 0; j < cols; ++j) {
-            std::cout << std::setw(8) << L[i][j];
+            std::cout << std::setw(w_num) << L[i][j];
         }
         std::cout << "\n";
     }
 
-    // подсказка по интерпретации
     std::cout << "\nПодсказка: обычно |нагрузка| >= 0.4 считается заметной.\n";
 }
 
 static void print_top_factor_per_feature(
     const std::vector<std::string>& features,
-    const std::vector<std::string>& factor_names,
     const std::vector<std::vector<double>>& L
 ) {
-    int rows = (int)features.size();
-    int cols = (int)factor_names.size();
+    const int rows = (int)features.size();
+    const int cols = rows > 0 ? (int)L[0].size() : 0;
 
     std::cout << "\nГлавный фактор для каждого признака (максимум |нагрузки|):\n";
     std::cout << std::fixed << std::setprecision(3);
@@ -67,7 +103,7 @@ static void print_top_factor_per_feature(
         }
 
         std::cout << "- " << features[i] << " -> "
-                  << factor_names[best_j] << " = " << best_val << "\n";
+                  << factor_label_full(best_j) << " = " << best_val << "\n";
     }
 }
 
@@ -127,22 +163,20 @@ int main() {
     // ===== Нагрузки =====
     auto L = compute_factor_loadings(R, k);
 
-    std::vector<std::string> factor_names;
-    for (int i = 0; i < k; ++i) {
-        factor_names.push_back("F" + std::to_string(i + 1));
-    }
-
     const std::string load_path = "results/factor_loadings.csv";
-    if (!write_table_csv(load_path, features, factor_names, L)) {
+    std::vector<std::string> factor_cols;
+    for (int j = 0; j < k; ++j) factor_cols.push_back(factor_label_short(j)); // в CSV оставляем коротко F1..F6
+
+    if (!write_table_csv(load_path, features, factor_cols, L)) {
         std::cerr << "Не удалось сохранить файл: " << load_path << "\n";
         return 1;
     }
     std::cout << "Файл " << load_path << " сохранён.\n";
     saved_files.push_back(load_path);
 
-    // Наглядный вывод в терминал
-    print_loadings_table(features, factor_names, L);
-    print_top_factor_per_feature(features, factor_names, L);
+    // Наглядный вывод
+    print_loadings_table(features, L);
+    print_top_factor_per_feature(features, L);
 
     // ===== Итоговый список файлов =====
     std::cout << "\nСохранённые файлы в папке results:\n";

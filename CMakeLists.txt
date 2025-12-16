@@ -17,6 +17,7 @@ add_executable(project1
     src/eigen_analysis.cpp
     src/eigen_results_writer.cpp
     src/factor_loadings.cpp
+    src/print_table.cpp
 )
 
 target_link_libraries(project1 Eigen3::Eigen)
