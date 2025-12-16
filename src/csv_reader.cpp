@@ -5,6 +5,10 @@
 #include <unordered_map>
 #include <iostream>
 
+// ВАЖНО: диагностику заголовков выключаем, чтобы не шумело каждый запуск.
+// Если снова понадобится — поставь true.
+static const bool PRINT_HEADERS = false;
+
 // Убираем пробелы по краям
 static std::string trim(const std::string& s)
 {
@@ -101,11 +105,16 @@ bool read_students_csv(
     char delim = detect_delimiter(header_line);
     std::vector<std::string> header = split_csv_line(header_line, delim);
 
-    // Чистим и печатаем заголовки
-    std::cout << "Найденные колонки (" << header.size() << "):\n";
+    // Чистим заголовки
     for (size_t i = 0; i < header.size(); ++i) {
         header[i] = trim(remove_bom(header[i]));
-        std::cout << "  [" << i << "] '" << header[i] << "'\n";
+    }
+
+    if (PRINT_HEADERS) {
+        std::cout << "Найденные колонки (" << header.size() << "):\n";
+        for (size_t i = 0; i < header.size(); ++i) {
+            std::cout << "  [" << i << "] '" << header[i] << "'\n";
+        }
     }
 
     std::unordered_map<std::string, int> index;
