@@ -1,8 +1,6 @@
 build/
 results/
 visualizations/
-
-
 # Compiled artifacts
 *.o
 *.obj
