@@ -1,6 +1,7 @@
-# Build folders
 build/
-cmake-build-*/
+results/
+visualizations/
+
 
 # Compiled artifacts
 *.o
