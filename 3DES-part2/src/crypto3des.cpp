@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
+#include <filesystem>
 
 #include <openssl/evp.h>
 #include <openssl/sha.h>
@@ -14,7 +15,7 @@ static void derive_key_iv_from_passphrase(
     unsigned char key24[24],
     unsigned char iv8[8]
 ) {
-    // Очень простая (учебная) деривация:
+    // Учебная деривация:
     // hash = SHA256(passphrase)
     // key = первые 24 байта hash
     // iv  = последние 8 байт hash
@@ -120,7 +121,7 @@ bool decrypt_3des_cbc(
     int out_len2 = 0;
     if (EVP_DecryptFinal_ex(ctx, plain.data() + out_len1, &out_len2) != 1) {
         EVP_CIPHER_CTX_free(ctx);
-        error = "EVP_DecryptFinal_ex: ошибка финализации (возможно, неверный пароль/повреждённые данные)";
+        error = "EVP_DecryptFinal_ex: ошибка финализации (возможно, неверный ключ/повреждённые данные)";
         return false;
     }
 
@@ -170,7 +171,8 @@ bool write_file(const std::string& path, const std::vector<unsigned char>& data,
     }
 
     if (!data.empty()) {
-        out.write(reinterpret_cast<const char*>(data.data()), static_cast<std::streamsize>(data.size()));
+        out.write(reinterpret_cast<const char*>(data.data()),
+                  static_cast<std::streamsize>(data.size()));
         if (!out) {
             error = "Ошибка записи файла: " + path;
             return false;
@@ -180,12 +182,38 @@ bool write_file(const std::string& path, const std::vector<unsigned char>& data,
     return true;
 }
 
+bool ensure_directory(const std::string& path, std::string& error) {
+    error.clear();
+
+    try {
+        std::filesystem::path p(path);
+
+        if (std::filesystem::exists(p)) {
+            if (!std::filesystem::is_directory(p)) {
+                error = "Путь существует, но это не папка: " + path;
+                return false;
+            }
+            return true; // папка уже есть
+        }
+
+        if (!std::filesystem::create_directories(p)) {
+            error = "Не удалось создать папку: " + path;
+            return false;
+        }
+
+        return true;
+    } catch (const std::exception& e) {
+        error = std::string("Ошибка при создании папки: ") + e.what();
+        return false;
+    }
+}
+
 std::string to_hex_preview(const std::vector<unsigned char>& data, size_t max_bytes) {
     std::ostringstream ss;
     ss << std::hex << std::setfill('0');
 
-    size_t n = data.size();
-    size_t take = (n < max_bytes) ? n : max_bytes;
+    const size_t n = data.size();
+    const size_t take = (n < max_bytes) ? n : max_bytes;
 
     for (size_t i = 0; i < take; ++i) {
         ss << std::setw(2) << static_cast<int>(data[i]);

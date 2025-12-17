@@ -15,10 +15,10 @@ static bool same_bytes(const std::vector<unsigned char>& a,
 }
 
 int main() {
-    // Фиксированные пути (учебный вариант)
+    // Фиксированные пути (запуск идёт из папки 3DES-part2)
     const std::string input_plain_path = "data/students.csv";
-    const std::string encrypted_path  = "results/students.enc";
-    const std::string decrypted_path  = "results/students_dec.csv";
+    const std::string encrypted_path   = "results/students.enc";
+    const std::string decrypted_path   = "results/students_dec.csv";
 
     // Фиксированный ключ (учебный пример)
     const std::string FIXED_KEY = "edu_3des_key";
@@ -43,11 +43,17 @@ int main() {
             continue;
         }
 
+        // ВАЖНО: создаём results/, если её нет
+        std::string dir_error;
+        if (!crypto3des::ensure_directory("results", dir_error)) {
+            std::cout << "Ошибка: " << dir_error << "\n";
+            continue;
+        }
+
         std::vector<unsigned char> input_data;
         std::string error;
 
-        const std::string input_path =
-            (choice == 1) ? input_plain_path : encrypted_path;
+        const std::string input_path = (choice == 1) ? input_plain_path : encrypted_path;
 
         if (!crypto3des::read_file(input_path, input_data, error)) {
             std::cout << "Ошибка чтения файла: " << error << "\n";
@@ -80,6 +86,7 @@ int main() {
             std::cout << "Шифрование выполнено успешно.\n";
             std::cout << "Результат сохранён в: " << encrypted_path << "\n";
             std::cout << "Размер шифртекста: " << cipher.size() << " байт\n";
+            std::cout << "Превью (hex): " << crypto3des::to_hex_preview(cipher) << "\n";
             std::cout << "Время шифрования: " << ms << " мс\n";
 
             // Самопроверка

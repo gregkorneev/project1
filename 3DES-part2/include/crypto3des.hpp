@@ -28,6 +28,9 @@ namespace crypto3des {
     bool read_file(const std::string& path, std::vector<unsigned char>& data, std::string& error);
     bool write_file(const std::string& path, const std::vector<unsigned char>& data, std::string& error);
 
+    // Создаёт папку (и вложенные), если её нет. Возвращает true при успехе.
+    bool ensure_directory(const std::string& path, std::string& error);
+
     // Для красивого вывода примера (hex первых N байт).
     std::string to_hex_preview(const std::vector<unsigned char>& data, size_t max_bytes = 32);
 }
