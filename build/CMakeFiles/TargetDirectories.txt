@@ -1,9 +1,0 @@
-/home/korneev/project1/build/CMakeFiles/launcher.dir
-/home/korneev/project1/build/CMakeFiles/edit_cache.dir
-/home/korneev/project1/build/CMakeFiles/rebuild_cache.dir
-/home/korneev/project1/build/ML-part1/CMakeFiles/project1.dir
-/home/korneev/project1/build/ML-part1/CMakeFiles/edit_cache.dir
-/home/korneev/project1/build/ML-part1/CMakeFiles/rebuild_cache.dir
-/home/korneev/project1/build/3DES-part2/CMakeFiles/three_des.dir
-/home/korneev/project1/build/3DES-part2/CMakeFiles/edit_cache.dir
-/home/korneev/project1/build/3DES-part2/CMakeFiles/rebuild_cache.dir

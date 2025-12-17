@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/launcher.dir/src/launcher.cpp.o -o bin/launcher 
